@@ -1,16 +1,20 @@
-name: 'Hello (Python)'
-description: 'Greet someone and expose a greeting output'
-inputs:
-  who-to-greet:
-    description: 'Name to greet'
-    required: true
-    default: 'World'
-outputs:
-  greeting:
-    description: 'The greeting that was printed'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.who-to-greet }}
+name: Run Greeting Workflow
+
+on: [push]
+
+jobs:
+  greet-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run local action
+        uses: ./.
+        id: hello
+        with:
+          who-to-greet: 'Mona Lisa'
+
+      - name: Print the output
+        run: echo "The action said ${{ steps.hello.outputs.greeting }}"
 
